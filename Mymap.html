@@ -27,17 +27,21 @@
         // 中心位置を指定
         center: tokyo,
         // 地図のズーム率(通常18まで)
-        zoom: 14,
-        // デフォルトのUIを使えなくする(地図、航空写真、全画面ビュー、縮小・拡大など)
-        disableDefaultUI: true,
-        // disableDefaultUI: trueで使えなくした状態から使いたい機能を付け足す
-        zoomControl: true,
-        // 表示形式の変更
-        // mapTypeId: 'satellite'
-        mapTypeId: 'hybrid',
-        // アイコンをクリックできないようにする
-        clikableIcons: false
+        zoom: 14
       });
+
+      // イベントの追加
+      map.addListener('click', function(e){
+        // クリックした時googledevconsoleで座標のログをだす
+        console.log(e.latLng.lat());
+        console.log(e.latLng.lng());
+        console.log(e.latLng.toString());
+        // クリックした場所を中央にする
+        // this.setCenter(e.latLng);
+        // クリックした場所を中央にする(なめらかに移動)
+        this.panTo(e.latLng);
+      });
+
     }
   </script>
 </body>

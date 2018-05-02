@@ -24,8 +24,19 @@
       var tokyo = {lat: 35.681167, lng: 139.767052};
 
       map = new google.maps.Map(target, {
+        // 中心位置を指定
         center: tokyo,
-        zoom: 11
+        // 地図のズーム率(通常18まで)
+        zoom: 14,
+        // デフォルトのUIを使えなくする(地図、航空写真、全画面ビュー、縮小・拡大など)
+        disableDefaultUI: true,
+        // disableDefaultUI: trueで使えなくした状態から使いたい機能を付け足す
+        zoomControl: true,
+        // 表示形式の変更
+        // mapTypeId: 'satellite'
+        mapTypeId: 'hybrid',
+        // アイコンをクリックできないようにする
+        clikableIcons: false
       });
     }
   </script>

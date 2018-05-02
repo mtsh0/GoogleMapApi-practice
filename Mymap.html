@@ -14,10 +14,19 @@
 </head>
 <body>
   <div id="target"></div>
-  <script src="https://mapsgoogleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
   <script>
     function initMap(){
       'use strict';
+
+      var target = document.getElementById('target');
+      var map;
+      var tokyo = {lat: 35.681167, lng: 139.767052};
+
+      map = new google.maps.Map(target, {
+        center: tokyo,
+        zoom: 11
+      });
     }
   </script>
 </body>

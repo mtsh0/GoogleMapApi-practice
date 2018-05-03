@@ -14,8 +14,6 @@
 </head>
 <body>
   <div id="target"></div>
-  <input type="text" id="address">
-  <button id="search">Search</button>
   <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
   <script>
     function initMap(){
@@ -27,36 +25,43 @@
 
       // Geocoder(Reverse Feocoder)用のインスタンスの生成
       var geocoder = new google.maps.Geocoder();
+      var map;
+      // マップのインスタンスを生成
+      map = new google.maps.Map(target, {
+        center: {
+          lat: 35.681167,
+          lng: 139.767052
+        },
+        zoom: 14
+      });
 
-      // idがsearchのhtml用を取得してその取得した要素をクリックした時に動作させる
-      document.getElementById('search').addEventListener('click', function(){
+      // マップをクリックした時の処理
+      map.addListener('click', function(e){
+        //
         geocoder.geocode({
-          // フォームに住所を渡す
-          address: document.getElementById('address').value
-
-        }, function(results, status)/*引数に結果と処理の結果が返却される*/{
-          // ステータスが未成功の場合
+          location: e.latLng
+        }, function(results, status){
           if (status !== 'OK') {
-            // アラートをだす
             alert('Failed:' + status);
-            // 処理を中断する
             return;
           }
 
-          // ステータスが成功の場合results[0].geometry.locationに緯度経度の情報が入る
+          // results[0].formatted_addressに詳細な住所が入ってくる
           if (results[0]) {
-            // 結果をmapに表示する
-            new google.maps.Map(target, {
-              center: results[0].geometry.location,
-              zoom: 14
+
+            new google.maps.Marker({
+              position: e.latLng,
+              map: map,
+              title: results[0].formatted_address,
+              animation: google.maps.Animation.DROP
             });
+
           } else {
             alert('No results found');
             return;
           }
         });
       });
-
 
     }
   </script>

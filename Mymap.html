@@ -14,6 +14,10 @@
 </head>
 <body>
   <div id="target"></div>
+  <ul id="info">
+    <li>abcdefghijklmnopqrstuvwxyz</li>
+    <li>ABCDEFGHIJKLMNOPQRSTUVWXYZ</li>
+  </ul>
   <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
   <script>
     function initMap(){
@@ -22,6 +26,8 @@
       var target = document.getElementById('target');
       var map;
       var tokyo = {lat: 35.681167, lng: 139.767052};
+      //地図上で情報を表示するための変数を設定
+      var infoWindow;
 
       map = new google.maps.Map(target, {
         // 中心位置を指定
@@ -30,28 +36,22 @@
         zoom: 14
       });
 
-      // マーカーをクリックした場所に設定する(インタラクティブにマーカーを捜査する)
-      map.addListener('click', function(e){
-        var marker = new google.maps.Marker({
-          // 緯度、経度を設定する
-          position: e.latLng,
-          //mapを設定する
-          map: map,
-          // マーカーのタイトルを表示する
-          title: e.latLng.toString(),
-          //マーカーのアニメーションを設定する
-          animation: google.maps.Animation.DROP
-        });
+      // 情報を表示するためのインスタンスを生成
+      infoWindow = new google.maps.InfoWindow({
+        position: tokyo,
+        //表示する文章
+        // content: 'Hee'
+        // 表示する文章(HTMLタグを指定できる)
+        // content: '<strong>Heee!!</strong>hee'
+        //表示する文章にHTMLタグを指定することもできる
+        content: document.getElementById('info'),
+        //表示する長さ(枠の大きさ)も調整可
+        maxWidth: 200
 
-        // セットされたマーカーをクリックしたら消せるように設定する
-        marker.addListener('click', function(){
-          this.setMap(null);
-        });
       });
 
-
-
-
+      //mapに情報を表示させる
+      infoWindow.open(map);
     }
   </script>
 </body>

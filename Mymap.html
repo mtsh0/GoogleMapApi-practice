@@ -14,46 +14,49 @@
 </head>
 <body>
   <div id="target"></div>
-
+  <input type="text" id="address">
+  <button id="search">Search</button>
   <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
   <script>
     function initMap(){
       'use strict';
 
       var target = document.getElementById('target');
-      var map;
-      var tokyo = {lat: 35.681167, lng: 139.767052};
+      // Geocoding: Address -> LatLng(住所を緯度経度に変換する)
+      // Reverse Geocording: LatLng -> Address(緯度経度から住所を割り出す)
 
-      // マップのインスタンスを設定する
-      map = new google.maps.Map(target, {
-        // 中心位置を指定
-        center: tokyo,
-        // 地図のズーム率(通常18まで)
-        zoom: 14
+      // Geocoder(Reverse Feocoder)用のインスタンスの生成
+      var geocoder = new google.maps.Geocoder();
+
+      // idがsearchのhtml用を取得してその取得した要素をクリックした時に動作させる
+      document.getElementById('search').addEventListener('click', function(){
+        geocoder.geocode({
+          // フォームに住所を渡す
+          address: document.getElementById('address').value
+
+        }, function(results, status)/*引数に結果と処理の結果が返却される*/{
+          // ステータスが未成功の場合
+          if (status !== 'OK') {
+            // アラートをだす
+            alert('Failed:' + status);
+            // 処理を中断する
+            return;
+          }
+
+          // ステータスが成功の場合results[0].geometry.locationに緯度経度の情報が入る
+          if (results[0]) {
+            // 結果をmapに表示する
+            new google.maps.Map(target, {
+              center: results[0].geometry.location,
+              zoom: 14
+            });
+          } else {
+            alert('No results found');
+            return;
+          }
+        });
       });
 
-      // マーカーを表示するための処理
-      map.addListener('click', function(e){
-        // マーカーのインスタンスを設定
-        var marker = new google.maps.Marker({
-          // マーカーの位置を設定
-          position: e.latLng,
-          // 配置するマップを指定
-          map: this,
-          // マップのアニメーションを設定
-          animation: google.maps.Animation.DROP
-        });
-        // 情報ウィンドウのインスタンスの生成
-        var infoWindow = new google.maps.InfoWindow({
-          // 表示させる内容の指定
-          content: e.latLng.toString()
-        });
-        //マーカーをクリックした時に情報ウィンドウを表示させる
-        marker.addListener('click', function(){
-          // 情報ウィンドウを表示させる
-          infoWindow.open(map, marker);
-        });
-      });
 
     }
   </script>

@@ -30,16 +30,23 @@
         zoom: 14
       });
 
-      // イベントの追加
-      map.addListener('click', function(e){
-        // クリックした時googledevconsoleで座標のログをだす
-        console.log(e.latLng.lat());
-        console.log(e.latLng.lng());
-        console.log(e.latLng.toString());
-        // クリックした場所を中央にする
-        // this.setCenter(e.latLng);
-        // クリックした場所を中央にする(なめらかに移動)
-        this.panTo(e.latLng);
+      // マーカーの作成
+      marker = new google.maps.Marker({
+        position: tokyo,
+        map: map,
+        // マーカーにタイトルをつける
+        title: 'Tokyo!',
+        // アイコンの画像を指定する
+        // icon: 'icon.png',
+        // アイコンにオプションを付加する(サイズ指定)
+        icon: {
+          url: 'icon.png',
+          scaledSize: new google.maps.Size(24, 24)
+        },
+        //アイコンをバウンドさせる
+        // animation: google.maps.Animation.BOUNCE
+        // アイコンを降ってくるアニメーションにする
+        animation: google.maps.Animation.DROP
       });
 
     }

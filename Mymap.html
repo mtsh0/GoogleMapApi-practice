@@ -30,24 +30,27 @@
         zoom: 14
       });
 
-      // マーカーの作成
-      marker = new google.maps.Marker({
-        position: tokyo,
-        map: map,
-        // マーカーにタイトルをつける
-        title: 'Tokyo!',
-        // アイコンの画像を指定する
-        // icon: 'icon.png',
-        // アイコンにオプションを付加する(サイズ指定)
-        icon: {
-          url: 'icon.png',
-          scaledSize: new google.maps.Size(24, 24)
-        },
-        //アイコンをバウンドさせる
-        // animation: google.maps.Animation.BOUNCE
-        // アイコンを降ってくるアニメーションにする
-        animation: google.maps.Animation.DROP
+      // マーカーをクリックした場所に設定する(インタラクティブにマーカーを捜査する)
+      map.addListener('click', function(e){
+        var marker = new google.maps.Marker({
+          // 緯度、経度を設定する
+          position: e.latLng,
+          //mapを設定する
+          map: map,
+          // マーカーのタイトルを表示する
+          title: e.latLng.toString(),
+          //マーカーのアニメーションを設定する
+          animation: google.maps.Animation.DROP
+        });
+
+        // セットされたマーカーをクリックしたら消せるように設定する
+        marker.addListener('click', function(){
+          this.setMap(null);
+        });
       });
+
+
+
 
     }
   </script>

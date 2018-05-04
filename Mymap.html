@@ -14,55 +14,58 @@
 </head>
 <body>
   <div id="target"></div>
-  <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap" async defer></script>
+  <input type="text" id="keyword">
+  <button id="search">search</button>
+  <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=AIzaSyA9LcEu99UT8OzJ2PcmLaE9K0UXrt1VdIk&callback=initMap&libraries=places" async defer></script>
   <script>
     function initMap(){
       'use strict';
 
       var target = document.getElementById('target');
-      // Geocoding: Address -> LatLng(住所を緯度経度に変換する)
-      // Reverse Geocording: LatLng -> Address(緯度経度から住所を割り出す)
-
-      // Geocoder(Reverse Feocoder)用のインスタンスの生成
-      var geocoder = new google.maps.Geocoder();
       var map;
+      var tokyo = {lat: 35.681167, lng: 139.767052}
+      // places用の変数の定義
+      var service;
       // マップのインスタンスを生成
       map = new google.maps.Map(target, {
-        center: {
-          lat: 35.681167,
-          lng: 139.767052
-        },
+        center: tokyo,
         zoom: 14
       });
 
-      // マップをクリックした時の処理
-      map.addListener('click', function(e){
-        //
-        geocoder.geocode({
-          location: e.latLng
+      document.getElementById('search').addEventListener('click', function(){
+        // places
+        service = new google.maps.places.PlacesService(map);
+        // 入力内容をもとに施設内容の検索
+        service.nearbySearch({
+          // 東京を中心に
+          location: tokyo,
+          // 半径500m以内
+          radius: '500',
+          // 検索内容
+          name: document.getElementById('keyword').value
         }, function(results, status){
-          if (status !== 'OK') {
-            alert('Failed:' + status);
-            return;
-          }
-
-          // results[0].formatted_addressに詳細な住所が入ってくる
-          if (results[0]) {
-
-            new google.maps.Marker({
-              position: e.latLng,
-              map: map,
-              title: results[0].formatted_address,
-              animation: google.maps.Animation.DROP
-            });
-
+          // 情報の受け取りに成功した場合
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            // 受け取った情報をすべて表示するためにfor文を利用
+            var i;
+            for (i = 0; i < results.length; i++){
+              // マーカーの作成、表示
+              new google.maps.Marker({
+                // 表示するマップを指定
+                map: map,
+                // マーカーの表示する場所を設定
+                position: results[i].geometry.location,
+                // マーカーの名称を設定
+                title: results[i].name
+              });
+            }
           } else {
-            alert('No results found');
+            // 情報の受け取りに失敗した場合
+            alert('Failed: ' + status);
             return;
           }
         });
       });
-
     }
   </script>
 </body>
